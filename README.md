@@ -201,8 +201,8 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
             "keyword": "판교 맛집",
             "searchCount": 24
         },
-        "total": 3
-    ]
+    ],
+     "total": 3
 }
 
 
