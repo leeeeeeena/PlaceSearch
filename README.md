@@ -188,10 +188,9 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 
 ```json
 {
-    "total": 3,
     "rankedKeywords": [
         {
-            "keyword": "\b분당 맛집",
+            "keyword": "분당 맛집",
             "searchCount": 50
         },
         {
@@ -201,7 +200,8 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
         {
             "keyword": "판교 맛집",
             "searchCount": 24
-        }
+        },
+        "total": 3
     ]
 }
 
@@ -312,11 +312,8 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 
 1. Redis(선택)
 
-Redis는 cache 처리가 되어 빠르다. 때문에 반응성(Low Latency)이 높다.  single thread 기반으로 동작하기 때문에 동시성 처리가 가장 용이하다고 생각했다.    
-물론 여기서 '동시성'과 '병렬성'은 다르기 때문에 redis도 같은 데이터에 대한 동기화 문제를 신경써주어야 한다. 
-Redis에서 동시성 처리를 하기 위해서는 Redisson의 @Transactional 의 사용해야 하는데 Spring에서 공식적으로 사용하는 라이브러리가 아니라서 에러 발생시 자료부족으로 대응하기 어려울 수 있겠다는 생각이 들어 제외하였고 
-하지만 키워드 검색이 (요구사항에 명시되지는 않았지만) 단발성 데이터보다는, 경우에 따라 한달 ~ 더 긴 기간동안 가져갈 수 있는 데이터라 판단아여 패스.
--> [RedisCacheManager](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/cache/RedisCacheManager.html) 사용.    
+Redis는 cache 처리가 되어 빠르다. 때문에 반응성(Low Latency)이 높다. single thread 기반으로 동작하지만 
+Redis에서 동시성 처리를 하기 위해서는 Redisson의 @Transactional 의 사용해야 하는데 Spring에서 공식적으로 사용하는 라이브러리가 아니라서 에러 발생시 자료부족으로 대응하기 어려울 수 있겠다는 생각이 들어 제외하였고 lettuce를 선택하고 [RedisCacheManager](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/cache/RedisCacheManager.html) 를 사용하여 구현하였다.     
 캐시 관리자는 처음 쓸 때 기본적으로 캐시를 생성하고, 기본 구성과 다른 캐시는 RedisCacheManagerBuilder.withInitialCacheConfigurations 에 따라 구성할 수 있다.
 
 </br>
