@@ -318,7 +318,7 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 
 option-1. Redis(선택)
 
-Redis는 cache 처리가 되어 빠르다. 때문에 반응성(Low Latency)이 높다. single thread 기반으로 동작하지만 동시성이 존재한다.(병렬x 동시o)   
+Redis는 `cache 처리`가 되어 빠르다. 때문에 `반응성(Low Latency)`이 높다. single thread 기반으로 동작하지만 동시성이 존재한다.(병렬x 동시o)   
 @Transactional을 사용하기 위해서는 Redisson을 사용해야 하는데 Spring에서 공식적으로 사용하는 라이브러리가 아니라서 에러 발생시 자료부족으로 대응하기 어려울 수 있겠다는 생각이 들어 제외하고 lettuce를 선택하였다. 
 [RedisCacheManager](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/cache/RedisCacheManager.html) 를 사용하여 구현하되, redistemplate에서 자체 제공하는 함수를 사용하면 함수 내에서는 원자성이 보장되므로 `조회, 업데이트를 분리하지 않고 사용`해주었다.   
 고도화된 아키텍처에서는 Redis Queue를 사용해서 확장성과 가용성을 높여 설계할 수도 있겠다.
