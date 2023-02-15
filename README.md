@@ -292,13 +292,9 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 요구사항 중에 `구글 장소 검색 등 새로운 검색 API 제공자의 추가 시 변경 영역 최소화에 대한 고려` 가 있었다. 의존도를 줄이기 위해 다음의 2가지를 구현하였다.
 
 1. `장소 검색 인터페이스(SearchService)`를 구현
-2. `라우터(ExternalSearchServiceRouter)`로 해당 인터페이스의 구현체인 KakaoSearchService와 NaverSearchService를 호출
-
-이를 통해 검색 API제공자가 추가되어도 SearchService의 코드 변경 없이 동작할 수 있도록 구현하였다.  
-또한, 검색결과를 정렬하는 알고리즘도 바꿔끼울 수 있게 다음의 2가지를 구현하였다.
-
-1. `ResultSort 인터페이스`로 `SearchService`에 의존관계를 주입
-2. 키워드 검색 횟수를 카운트 하기 위한 `레포지토리(SearchRepository)`에 Redis, RDBMS(JPA) 등 레포지토리를 다양하게 바꿔 사용할 수 있도록 인터페이스를 정의
+2. `라우터(ExternalSearchServiceRouter)`로 해당 인터페이스의 구현체인 KakaoSearchService와 NaverSearchService를 호출하여 검색 API제공자가 추가되어도 SearchService의 코드 변경 없이 동작할 수 있도록 구현
+3. 검색결과 정렬하는 알고리즘을 바꿔끼울 수 있도록 `ResultSort 인터페이스`로 `SearchService`에 의존관계를 주입
+4. 키워드 검색 횟수를 카운트 하기 위한 `레포지토리(SearchRepository)`에 Redis, RDBMS(JPA) 등 레포지토리를 다양하게 바꿔 사용할 수 있도록 인터페이스를 정의
 
 </br>
 
