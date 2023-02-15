@@ -313,10 +313,9 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 ### 2. 키워드 별로 검색된 횟수
 
 키워드에 대한 데이터를 저장하려면, DB가 필요하다. 
-대용량 트래픽 처리를 위한 반응성(Low Latency), 확장성(Scalability), 가용성(Availability) 을 고려하여 어떤 DB가 가장 좋을지 고민하였다.    
-결론적으로 Redis를 선택했다.   
+대용량 트래픽 처리를 위한 반응성(Low Latency), 확장성(Scalability), 가용성(Availability) 을 고려하여 어떤 DB가 가장 좋을지 고민하였다. 결론적으로 Redis를 선택했다.      
 
-option-1. Redis(선택)
+option-1. **Redis(선택)**
 
 Redis는 `cache 처리`가 되어 빠르다. 때문에 `반응성(Low Latency)`이 높다. single thread 기반으로 동작하지만 동시성이 존재한다.(병렬x 동시o)   
 @Transactional을 사용하기 위해서는 Redisson을 사용해야 하는데 Spring에서 공식적으로 사용하는 라이브러리가 아니라서 에러 발생시 자료부족으로 대응하기 어려울 수 있겠다는 생각이 들어 제외하고 lettuce를 선택하였다. 
