@@ -1,5 +1,8 @@
 # 장소검색 서비스
 
+![image](https://user-images.githubusercontent.com/125448783/219024559-e64398a2-a70d-4eac-b041-b285834cd6e6.png)
+   
+
 ### 요구사항
 
 **1. 장소검색**
@@ -296,7 +299,7 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 
 ## 핵심 문제 해결 전략
 
-1. 의존성 줄이기
+### 1. 의존성 줄이기
 
 ![image](https://user-images.githubusercontent.com/125448783/219016583-239f1ea3-3e97-4d7a-be8c-5cb9263f097d.png)
 
@@ -307,30 +310,34 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 
 </br>
 
-2. 키워드 별로 검색된 횟수
+### 2. 키워드 별로 검색된 횟수
 
 키워드에 대한 데이터를 저장하려면, DB가 필요하다. 
-대용량 트래픽 처리를 위한 반응성(Low Latency), 확장성(Scalability), 가용성(Availability) 을 고려하여 어떤 DB가 가장 좋을지 고민하였다. 
+대용량 트래픽 처리를 위한 반응성(Low Latency), 확장성(Scalability), 가용성(Availability) 을 고려하여 어떤 DB가 가장 좋을지 고민하였다.    
+결론적으로 Redis를 선택했다.   
 
-1. Redis(선택)
+option-1. Redis(선택)
 
-Redis는 cache 처리가 되어 빠르다. 때문에 반응성(Low Latency)이 높다. single thread 기반으로 동작하지만 
-Redis에서 동시성 처리를 하기 위해서는 Redisson의 @Transactional 의 사용해야 하는데 Spring에서 공식적으로 사용하는 라이브러리가 아니라서 에러 발생시 자료부족으로 대응하기 어려울 수 있겠다는 생각이 들어 제외하였고 lettuce를 선택하고 [RedisCacheManager](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/cache/RedisCacheManager.html) 를 사용하여 구현하였다.     
-캐시 관리자는 처음 쓸 때 기본적으로 캐시를 생성하고, 기본 구성과 다른 캐시는 RedisCacheManagerBuilder.withInitialCacheConfigurations 에 따라 구성할 수 있다.
+Redis는 cache 처리가 되어 빠르다. 때문에 반응성(Low Latency)이 높다. single thread 기반으로 동작하지만 동시성이 존재한다.(병렬x 동시o)   
+@Transactional을 사용하기 위해서는 Redisson을 사용해야 하는데 Spring에서 공식적으로 사용하는 라이브러리가 아니라서 에러 발생시 자료부족으로 대응하기 어려울 수 있겠다는 생각이 들어 제외하고 lettuce를 선택하였다. 
+[RedisCacheManager](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/cache/RedisCacheManager.html) 를 사용하여 구현하되, redistemplate에서 자체 제공하는 함수를 사용하면 함수 내에서는 원자성이 보장되므로 조회, 업데이트를 분리하지 않고 사용해주었다.   
+고도화된 아키텍처에서는 Redis Queue를 사용해서 확장성과 가용성을 높여 설계할 수도 있겠다.
 
-</br>
-
-2. RDBMS (JPA)
-
-가장 고전적인 방법이다. 데이터를 영구적으로 보관할 수 있고 레퍼런스도 많다.   
-데이터 정합성을 필요로 하는 서비스의 경우 NoSQL보다는 덜 유연하지만, 안전한 RDBMS를 선택하는 것이 맞다. 
 
 </br>
 
-3. Kafka Connect
+option-2. RDBMS (JPA)
 
-사실 가장 구현하고 싶은 것은 kafka connect이다. 서버 하나에 오류가 나도 middleware로 관리하면 장애가 전이되지 않고 구현할 수 있고 데이터베이스간 동기화도 용이하다.    
-하지만 프로젝트 기간이 길지 않아 kafka를 띄우고 테스트까지 하기엔 시간이 부족할 것 같아 패스... 고도화 작업으로 적용해보고 싶다.    
+데이터를 영구적으로 보관할 수 있고 레퍼런스도 많다. @Transactional을 통해 동시성 처리도 할 수 있다.    
+데이터 정합성을 필요로 하는 서비스의 경우 NoSQL보다 RDBMS를 사용하는 것이 맞으나, 이 경우 구조가 간단하고 데이터 정합성이 크게 중요하지 않았다. 무엇보다 Redis가 더 빠르다. 
+
+</br>
+
+optioin-3. Kafka Connect
+
+서버 하나에 오류가 나도 middleware로 관리하면 장애가 전이되지 않고 구현할 수 있고 데이터베이스간 동기화도 용이하다.    
+Kafka Connect + NoSQLDB 로 구현하면 서버에 장애가 나도 kafka에 들어간 데이터는 무사히 업데이트 할 수 있다.   
+추후에 고도화로 진행해보고 싶다.     
 
 </br>
 
