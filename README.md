@@ -295,7 +295,10 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 2. `라우터(ExternalSearchServiceRouter)`로 해당 인터페이스의 구현체인 KakaoSearchService와 NaverSearchService를 호출
 
 이를 통해 검색 API제공자가 추가되어도 SearchService의 코드 변경 없이 동작할 수 있도록 구현하였다.  
-검색결과를 정렬하는 알고리즘도 바꿔끼울 수 있게 `ResultSort 인터페이스`로 의존관계를 주입해주었고, 마찬가지로 키워드 검색 횟수를 카운트 하기 위한 `레포지토리(SearchRepository)`도 Redis, JPA 등 다양하게 바꿔 사용할 수 있도록 인터페이스로 정의해주었다.
+또한, 검색결과를 정렬하는 알고리즘도 바꿔끼울 수 있게 다음의 2가지를 구현하였다.
+
+1. `ResultSort 인터페이스`로 `SearchService`에 의존관계를 주입
+2. 키워드 검색 횟수를 카운트 하기 위한 `레포지토리(SearchRepository)`에 Redis, RDBMS(JPA) 등 레포지토리를 다양하게 바꿔 사용할 수 있도록 인터페이스를 정의
 
 </br>
 
