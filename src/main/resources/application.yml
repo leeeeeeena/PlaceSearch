@@ -1,0 +1,33 @@
+
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  redis:
+    port: 6379
+    host: 52.79.169.125
+    password: q1w2e3r412
+
+server:
+  port: 9090
+
+external:
+  kakao:
+    host: https://dapi.kakao.com
+    search-uri: /v2/local/search/keyword.json
+    api-key: 8598e40172eaf4f67dddd54f607a83c6
+
+  naver:
+    host: https://openapi.naver.com
+    search-uri: /v1/search/local.json
+    client-id: u0DSlBU9FyCRXInyq2k3
+    client-secret: hJJcv4J9_I
+
+request:
+  timeout: 5000
+
+resilience4j:
+  failure-rate: 4
+  wait-duration-in-open-state: 5000 #milli seconds
+  timeout-duration: 4 #seconds
+  sliding-window-size: 2
