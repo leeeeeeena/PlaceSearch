@@ -289,7 +289,7 @@ curl -X GET --location "http://localhost:9090/v1/search/rank/keyword" \
 
 ![image](https://user-images.githubusercontent.com/125448783/219016583-239f1ea3-3e97-4d7a-be8c-5cb9263f097d.png)
 
-요구사항 중에 `구글 장소 검색 등 새로운 검색 API 제공자의 추가 시 변경 영역 최소화에 대한 고려` 가 있었다. 의존도를 줄이기 위해 다음의 2가지를 구현하였다.
+요구사항 중에 `구글 장소 검색 등 새로운 검색 API 제공자의 추가 시 변경 영역 최소화에 대한 고려` 가 있었다. 의존도를 줄이기 위해 다음의 4가지를 구현하였다.
 
 1. `장소 검색 인터페이스(SearchService)`를 구현
 2. `라우터(ExternalSearchServiceRouter)`로 해당 인터페이스의 구현체인 KakaoSearchService와 NaverSearchService를 호출하여 검색 API제공자가 추가되어도 SearchService의 코드 변경 없이 동작할 수 있도록 구현
