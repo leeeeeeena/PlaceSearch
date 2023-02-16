@@ -322,7 +322,7 @@ option-2. RDBMS (JPA)
 optioin-3. Kafka Connect
 
 서버 하나에 오류가 나도 middleware로 관리하면 장애가 전이되지 않고 구현할 수 있고 데이터베이스간 동기화도 용이하다.  
-Kafka Connect + NoSQLDB 로 구현하면 서버에 장애가 나도 kafka에 들어간 데이터는 무사히 업데이트 할 수 있다.  
+Kafka Connect + RDBMS 로 구현하면 데이터 정합성이 중요한 데이터처리도 할 수 있으면서 서버에 장애가 나도 kafka에 들어간 데이터는 무사히 업데이트 할 수 있다.  
 추후에 고도화로 진행해보고 싶다.
 
 </br>
